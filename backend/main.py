@@ -1,15 +1,25 @@
+"""AURA Multi-Agent System — Entry Point
+
+Runs the ADK-based healthcare campaign orchestrator.
+Can be used with `adk run backend` or executed directly for testing.
+"""
+
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.orchestrator import Orchestrator
+from backend.orchestrator import root_agent
+
 
 def main():
     print("Welcome to the AURA Multi-Agent System")
-    orchestrator = Orchestrator()
-    
-    # Simulating the user input
-    orchestrator.run_flow(health_concern="diabetes", channel="email")
+    print(f"Root agent: {root_agent.name}")
+    print(f"Model: {root_agent.model}")
+    print(f"Tools: {[t.name if hasattr(t, 'name') else str(t) for t in root_agent.tools]}")
+    print()
+    print("To run interactively, use:  adk run backend")
+    print("Or use the ADK web UI:      adk web backend")
+
 
 if __name__ == "__main__":
     main()
