@@ -1,87 +1,67 @@
-"""Execution Agent — ADK LlmAgent
-
-Sends mock emails and returns campaign measurement results.
-Uses a FunctionTool to simulate sending and gather metrics.
-"""
+"""Execution Agent — Returns a mock campaign email and hardcoded metrics."""
 
 import json
-import random
 from google.adk.agents import LlmAgent
 from google.adk.tools import FunctionTool
 
 
-def execute_and_measure(recipient_count: int) -> str:
-    """Execute the campaign (mock send) and return measurement results.
+def send_campaign_emails(simulation_result: str) -> str:
+    """Mock-send campaign emails. Returns what would have been sent.
 
     Args:
-        recipient_count: The total number of members targeted in the campaign.
+        simulation_result: JSON from simulation (used for context).
 
     Returns:
-        A JSON string containing campaign measurement results including
-        open rates, CTR, conversion, lift, incremental trips, and ROAS.
+        JSON with the mock email that would be sent.
     """
-    # Generate realistic mock metrics where test outperforms control
-    test_open = round(random.uniform(0.35, 0.50), 2)
-    test_ctr = round(random.uniform(0.12, 0.22), 2)
-    test_conv = round(random.uniform(0.06, 0.12), 2)
-
-    control_open = round(random.uniform(0.18, 0.28), 2)
-    control_ctr = round(random.uniform(0.04, 0.10), 2)
-    control_conv = round(random.uniform(0.02, 0.05), 2)
-
-    open_lift = round((test_open - control_open) / control_open * 100)
-    ctr_lift = round((test_ctr - control_ctr) / control_ctr * 100)
-    conv_lift = round((test_conv - control_conv) / control_conv * 100)
-
-    incremental_trips = random.randint(800, 2000)
-    roas = round(random.uniform(3.0, 6.0), 1)
-
-    results = {
-        "campaign_measurement": {
-            "members_targeted": recipient_count,
-            "test_group": {
-                "open_rate": test_open,
-                "ctr": test_ctr,
-                "conversion_rate": test_conv,
-            },
-            "control_group": {
-                "open_rate": control_open,
-                "ctr": control_ctr,
-                "conversion_rate": control_conv,
-            },
-            "lift": {
-                "open_rate_lift": f"{open_lift}%",
-                "ctr_lift": f"{ctr_lift}%",
-                "conversion_lift": f"{conv_lift}%",
-            },
-            "incremental_trips": incremental_trips,
-            "roas": roas,
-            "recommendation": (
-                "Personalized campaign significantly outperformed control. "
-                "Recommend scaling to full member base."
+    return json.dumps({
+        "total_sent": 1,
+        "mock_recipient": "palakb1406@gmail.com",
+        "email": {
+            "subject": "Your Personalized Diabetes Care Plan from CVS Health",
+            "body": (
+                "Hi there,\n\n"
+                "At CVS Health, we know managing diabetes is personal.\n\n"
+                "Based on your pharmacy activity, here's your tailored care plan:\n"
+                "  • Save 20% on glucose monitors & test strips\n"
+                "  • FREE A1C screening at MinuteClinic\n"
+                "  • Personalized medication reminders via the CVS app\n"
+                "  • 90-day supply options to simplify refills\n\n"
+                "Stay well,\nThe CVS Health Team"
             ),
-        }
-    }
-    return json.dumps(results, indent=2)
+        },
+    }, indent=2)
+
+
+def measure_campaign(total_sent: int) -> str:
+    """Return hardcoded campaign metrics.
+
+    Args:
+        total_sent: Number of emails sent.
+
+    Returns:
+        JSON with campaign measurement.
+    """
+    return json.dumps({
+        "members_targeted": total_sent,
+        "test_group": {"open_rate": 0.42, "ctr": 0.18, "conversion": 0.09},
+        "control_group": {"open_rate": 0.25, "ctr": 0.08, "conversion": 0.03},
+        "lift": {"open_rate": "68%", "ctr": "125%", "conversion": "200%"},
+        "incremental_trips": 1250,
+        "roas": 4.2,
+        "recommendation": "Personalized campaign outperformed control. Scale to full base.",
+    }, indent=2)
 
 
 execution_agent = LlmAgent(
     model="gemini-2.5-flash",
     name="execution_agent",
-    description=(
-        "Executes the approved email campaign (mock send) and returns "
-        "measurement results including open rates, CTR, conversion, lift, "
-        "incremental trips, and ROAS."
-    ),
-    instruction="""You are the Execution Agent.
+    description="Mock-sends approved campaign emails and returns measurement results.",
+    instruction="""You are the Execution Agent. Only run AFTER human approval.
 
-You receive approved campaign emails (test + control).
-
-1. Acknowledge that all emails have been sent (mock).
-2. Call execute_and_measure with the total recipient count to get campaign metrics.
-3. Return the full measurement results exactly as provided by the tool.
-
-Do not fabricate metrics — use the tool output.
+1. Call send_campaign_emails with the simulation results.
+2. Call measure_campaign with the total_sent from step 1.
+3. Return both results.
 """,
-    tools=[FunctionTool(execute_and_measure)],
+    tools=[FunctionTool(send_campaign_emails), FunctionTool(measure_campaign)],
 )
