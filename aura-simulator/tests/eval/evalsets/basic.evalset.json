@@ -1,0 +1,88 @@
+{
+  "eval_set_id": "aura_simulator_eval",
+  "name": "Aura Simulator A/B Test Evaluation",
+  "description": "Evaluation cases for the Aura Simulator agent covering audience analysis, content indexing, simulation runs, and recommendation quality.",
+  "eval_cases": [
+    {
+      "eval_id": "greeting_and_capabilities",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{"text": "Hello, what can you help me with?"}]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "aura_simulator",
+        "user_id": "eval_user",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "missing_inputs_prompt",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{"text": "I want to run an A/B test for my e-commerce site."}]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "aura_simulator",
+        "user_id": "eval_user",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "full_ab_test_newsletter",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{
+              "text": "Run an A/B test simulation.\nTarget audience: millennial urban professionals aged 25-35\nContent repository: Homepage hero banner, Email welcome series, Promo popup discount, Loyalty rewards section, Product recommendation carousel\nUse case: increase newsletter sign-up rate"
+            }]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "aura_simulator",
+        "user_id": "eval_user",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "full_ab_test_purchase",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{
+              "text": "Simulate A/B tests with the following:\nTarget audience: budget-conscious suburban families with children\nContent repository: Flash sale banner, Buy-one-get-one popup, Free shipping email, Referral rewards section, Seasonal product showcase\nUse case: increase purchase conversion rate"
+            }]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "aura_simulator",
+        "user_id": "eval_user",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "full_ab_test_retention",
+      "conversation": [
+        {
+          "user_content": {
+            "parts": [{
+              "text": "Please run A/B test simulations.\nTarget audience: high-income executives and senior professionals aged 40-55\nContent repository: Exclusive member benefits email, Premium dashboard feature tour, Concierge onboarding push notification, Loyalty tier upgrade popup\nUse case: improve user retention and reduce churn"
+            }]
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "aura_simulator",
+        "user_id": "eval_user",
+        "state": {}
+      }
+    }
+  ]
+}
